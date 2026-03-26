@@ -1,0 +1,34 @@
+name: Security Test Workflow
+
+on:
+  issues:
+      types: [opened, edited]
+        pull_request_target:
+            types: [opened, synchronize]
+
+            jobs:
+              test-injection:
+                  runs-on: ubuntu-latest
+                      steps:
+                            - name: Print issue title
+                                    if: github.event_name == 'issues'
+                                            run: |
+                                                      echo "Issue title: ${{ github.event.issue.title }}"
+                                                                echo "Issue body: ${{ github.event.issue.body }}"
+
+                                                                            - name: Print PR title  
+                                                                                    if: github.event_name == 'pull_request_target'
+                                                                                            run: |
+                                                                                                      echo "PR title: ${{ github.event.pull_request.title }}"
+                                                                                                                echo "PR body: ${{ github.event.pull_request.body }}"
+                                                                                                                      
+                                                                                                                            - name: Check token permissions
+                                                                                                                                    run: |
+                                                                                                                                              echo "Checking GITHUB_TOKEN permissions..."
+                                                                                                                                                        curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                                                                                                                                                                    https://api.github.com/repos/${{ github.repository }} | head -5
+                                                                                                                                                                              
+                                                                                                                                                                                        echo "---"
+                                                                                                                                                                                                  echo "Token scopes:"
+                                                                                                                                                                                                            curl -s -I -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                                                                                                                                                                                                                        https://api.github.com/repos/${{ github.repository }} | grep -i "x-oauth-scopes"

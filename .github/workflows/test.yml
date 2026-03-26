@@ -1,9 +1,10 @@
 name: Test
 on:
   issues:
-      types: [opened]
-      jobs:
-        check:
-            runs-on: ubuntu-latest
-                steps:
-                      - run: echo "${{ github.event.issue.title }}"
+    types: [opened]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "${{ github.event.issue.title }}"
